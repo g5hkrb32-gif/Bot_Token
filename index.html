@@ -3,13 +3,27 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 import requests
 import os
-import json
+import sys
 
 # ---------------------------------------------------------
-# 🔑 قراءة المتغيرات من بيئة السيرفر (Render/Heroku)
+# 🔑 قراءة المتغيرات من بيئة السيرفر (Render)
 # ---------------------------------------------------------
-BOT_TOKEN = os.getenv('BOT_TOKEN', '9108066830:AAHH-VHHsbJhZPlW0JFLn9xET7ObWFn9xET7ObWFZ8ifc')
-HF_TOKEN = os.getenv('HF_TOKEN', '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')
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+HF_TOKEN = os.getenv('HF_TOKEN')
+
+# التحقق من وجود التوكنات
+if not BOT_TOKEN:
+    print("❌ خطأ: BOT_TOKEN غير موجود في Environment Variables")
+    sys.exit(1)
+
+if not HF_TOKEN:
+    print("❌ خطأ: HF_TOKEN غير موجود في Environment Variables")
+    sys.exit(1)
+
+print(f"✅ تم تحميل التوكنات بنجاح!")
+print(f"   BOT_TOKEN: {BOT_TOKEN[:5]}...{BOT_TOKEN[-4:]}")
+print(f"   HF_TOKEN: {HF_TOKEN[:5]}...{HF_TOKEN[-4:]}")
+
 OWNER_ID = 546977659 
 
 # قاعدة بيانات الشخصيات
@@ -148,4 +162,4 @@ def main():
     app.run_polling()
 
 if __name__ == '__main__':
-    main()
+    main() 
