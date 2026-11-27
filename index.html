@@ -1,236 +1,151 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucid Dreams - Owned by @akrrma99</title>
-    <style>
-        body {
-            background-color: #050505;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+import telegram
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters, CallbackQueryHandler
+import requests
+import os
+import json
 
-        h1 {
-            color: #ff0055;
-            text-shadow: 0 0 10px #ff0055;
-            margin-bottom: 10px;
-        }
+# ---------------------------------------------------------
+# 🔑 الإعدادات الأساسية
+# ---------------------------------------------------------
+BOT_TOKEN = "9108066830:AAHH-VHHsbJhZPlW0JFLn9xET7ObWFn9xET7ObWFZ8ifc" 
+HF_TOKEN = "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" # 🔗 تم الربط هنا
+OWNER_ID = 546977659 
 
-        .owner-badge {
-            background: linear-gradient(45deg, #ff0055, #ff6600);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            margin-bottom: 30px;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
-            border: 1px solid #fff;
-        }
+# قاعدة بيانات الشخصيات
+CHARACTS_DB = [
+    {
+        "name": "Aiko - Behind on Rent",
+        "image_url": "https://via.placeholder.com/300x300.png?text=Aiko", 
+        "prompt": "You are Aiko, a seductive tenant who is 4 months behind on rent. You are desperate for money and willing to do anything to delay eviction. Speak in Arabic with a flirtatious tone.",
+        "tags": ["Rent", "Seductive"]
+    },
+    {
+        "name": "Tessa Quinn - Stepsister",
+        "image_url": "https://via.placeholder.com/300x300.png?text=Tessa",
+        "prompt": "You are Tessa, the rebellious stepsister. You are bold, direct, and not afraid to be explicit. Speak in Arabic.",
+        "tags": ["Family", "Rebellious"]
+    }
+]
 
-        /* شبكة البطاقات */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1000px;
-            margin-bottom: 50px;
-        }
+# بيانات المستخدمين
+USERS_DATA = {}
 
-        .card {
-            background: #1a1a1a;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #333;
-            position: relative;
-        }
+def get_user_data(chat_id):
+    if chat_id not in USERS_DATA:
+        USERS_DATA[chat_id] = {"gems": 100, "energy": 10}
+    return USERS_DATA[chat_id]
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
-            border-color: #ff0055;
-        }
-
-        .card-img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            background: #222;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #555;
-            font-size: 2em;
-        }
-
-        .card-info {
-            padding: 15px;
-        }
-
-        .card-title {
-            font-weight: bold;
-            color: #fff;
-            margin: 0;
-        }
-
-        .card-desc {
-            font-size: 0.8em;
-            color: #aaa;
-            margin-top: 5px;
-        }
-
-        .tag-18 {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff0055;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7em;
-            font-weight: bold;
-        }
-
-        /* النافذة المنبثقة (Modal) */
-        .modal-overlay {
-            display:        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-            border: 2px solid #ff0055;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #fff;
-            font-size: 1.5em;
-            cursor: pointer;
-        }
-
-        /* تذييل الصفحة بعلامة المالك */
-        .footer {
-            margin-top: auto;
-            padding: 20px;
-            text-align: center;
-            color: #666;
-            font-size: 0.8em;
-            width: 100%;
-            border-top: 1px solid #333;
-        }
-
-        .owner-footer {
-            color: #ff0055;
-            font-weight: bold;
-        }
-
-    </style>
-</head>
-<body>
-
-    <h1>Lucid Dreams (18+)</h1>
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    user_data = get_user_data(chat_id)
     
-    <!-- شارة المالك -->
-    <div class="owner-badge">تم تطويره بواسطة @akrrma99</div>
+    keyboard = []
+    for char in CHARACTS_DB:
+        keyboard.append([InlineKeyboardButton(char['name'], callback_data=f"char_{char['name']}")])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    caption = f"""👋 أهلاً بك يا سيدي!
 
-    <div class="grid-container" id="cardGrid">
-        <!-- البطاقات سيتم إنشاؤها بالجافاسكريبت -->
-    </div>
+💎 جواهرك: {user_data['gems']}
+⚡ طاقتك: {user_data['energy']}/10
 
-    <!-- نافذة المشاهدة -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle">عنوان المشهد</h2>
-            <div style="width: 100%; height: 300px; background: #000; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                <span style="font-size: 3em;">▶</span>
-            </div>
-            <p id="modalDesc">وصف تفصيلي للمشهد...</p>
-            <button class="toggle-btn" style="width: 100%;">بدء العرض</button>
-        </div>
-    </div>
+اختر شخصية لتبدأ المغامرة:"""
 
-    <!-- تذييل الصفحة -->
-    <div class="footer">
-        جميع الحقوق محفوظة © 2026 | الملكية لـ <span class="owner-footer">@akrrma99</span>
-    </div>
+    await update.message.reply_photo(
+        photo="https://via.placeholder.com/300x300.png?text=Select+Character", 
+        caption=caption,
+        reply_markup=reply_markup
+    )
 
-<script>
-    // بيانات البطاقات (يمكنك إضافة المزيد)
-    const cardsData = [
-        { title: "Behind on Rent", desc: "أليكسا تأخرت عن الدفع...", img: "🏠" },
-        { title: "Stray in the Alley", desc: "نيا في الزقاق...", img: "🌧️" },
-        { title: "Catgirl From Another World", desc: "قطة غريبة...", img: "🐱" },
-        { title: "Wrong Side of Escort Service", desc: "الينابيع الساخنة...", img: "♨️" },
-        { title: "Date Night", desc: "مساءً هادئ...", img: "🍷" },
-        { title: "BDSM Dungeon", desc: "غرفة VIP...", img: "⛓️" }
-    ];
+async def select_character(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    chat_id = query.message.chat.id
+    user_data = get_user_data(chat_id)
+    
+    char_name = query.data.replace("char_", "")
+    character = next((c for c in CHARACTS_DB if c['name'] == char_name), None)
+    
+    if not character:
+        await query.answer("حدث خطأ!")
+        return
 
-    const grid = document.getElementById('cardGrid');
-    const modal = document.getElementById('modalOverlay');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
+    await query.edit_message_text(f"بدأت المحادثة مع: {character['name']} \n\n*تذكر: كل رسالة تستهلك جوهرة!*", parse_mode='Markdown')
+    context.user_data['current_char'] = character
+    
+    # إرسال أول رسالة من الشخصية باستخدام AI
+    await send_ai_message(context, chat_id, character['prompt'])
 
-    // إنشاء البطاقات
-    cardsData.forEach(card => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-            <div class="tag-18">18+</div>
-            <div class="card-img">${card.img}</div>
-            <div class="card-info">
-                <div class="card-title">${card.title}</div>
-                <div class="card-desc">${card.desc}</div>
-            </div>
-        `;
-        div.onclick = () => openModal(card);
-        grid.appendChild(div);
-    });
+async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    user_text = update.message.text
+    user_data = get_user_data(chat_id)
+    
+    if user_data['gems'] <= 0:
+        await update.message.reply_text("نفدت جواهرك! تواصل مع المالك @akrrma99 لشرائها.")
+        return
+        
+    user_data['gems'] -= 1
+    
+    current_char = context.user_data.get('current_char')
+    if not current_char:
+        await update.message.reply_text("لم تختر شخصية بعد، اضغط /start")
+        return
 
-    function openModal(card) {
-        modalTitle.innerText = card.title;
-        modalDesc.innerText = card.desc;
-        modal.style.display = 'flex';
-    }
+    # استدعاء الذكاء الاصطناعي الحقيقي
+    ai_response = await call_mistral(current_char['prompt'], user_text)
+    
+    await update.message.reply_text(ai_response)
 
-    function closeModal() {
-        modal.style.display = 'none';
-    }
-
-    // إغلاق النافذة عند النقر خارجها
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            closeModal();
+async def call_mistral(system_prompt, user_input):
+    url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+    
+    # تنسيق الطلب لـ Mistral
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_input}
+    ]
+    
+    payload = {
+        "inputs": str(messages),
+        "parameters": {
+            "max_new_tokens": 250,
+            "temperature": 0.7,
+            "return_full_text": False
         }
     }
-</script>
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        data = response.json()
+        
+        # استخراج الرد من النتيجة
+        if isinstance(data, list) and len(data) > 0:
+            generated_text = data[0].get('generated_text', '')
+            # تنظيف النص من الأوسار الزائدة
+            clean_text = generated_text.replace('[INST]', '').replace('[/INST]', '').strip()
+            return clean_text
+        else:
+            return "عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي."
+            
+    except Exception as e:
+        return f"خطأ: {str(e)}"
 
-</body>
-</html>
+async def send_ai_message(context, chat_id, prompt):
+    # إرسال الرسالة الأولى كنص عادي أو صوتي
+    await context.bot.send_message(chat_id, f"*{prompt}*")
+
+def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    
+    app.add_handler(CommandHandler('start', start))
+    app.add_handler(CallbackQueryHandler(select_character, pattern='^char_'))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+    
+    print("🤖 Bot is running with Mistral-7B AI...")
+    app.run_polling()
+
+if __name__ == '__main__':
+    main()
