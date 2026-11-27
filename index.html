@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المختبر التفاعلي</title>
+  <style>
+    :root {
+      --bg: #0f0d15;
+      --card: #191624;
+      --accent: #7c5cff;
+      --text: #f4f3f8;
+      --muted: #9e99b3;
+      --border: #2b263d;
+    }
+    * { box-sizing: border-box; font-family: sans-serif; }
+    body { margin: 0; padding: 16px 16px 84px; background: var(--bg); color: var(--text); }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .wallet { background: var(--card); border: 1px solid var(--border); padding: 6px 12px; border-radius: 999px; }
+    .search-row { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+    input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .btn { width: 100%; padding: 9px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; }
+    .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #14111d; border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px; }
+    .nav button { background: transparent; color: var(--muted); border: none; padding: 8px; font-size: 12px; }
+    .nav button.active { color: var(--text); font-weight: 600; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h3 id="appTitle" style="margin:0;">المختبر التفاعلي</h3>
+    <div class="wallet">الرصيد: <strong id="coinsValue">100</strong></div>
+  </div>
+
+  <section id="tab-characters">
+    <div class="search-row"><input id="searchInput" type="text" placeholder="ابحث عن شخصية..."></div>
+    <div id="charactersGrid" class="grid"></div>
+  </section>
+
+  <section id="tab-shop" class="hidden"><div id="shopGrid" class="grid"></div></section>
+
+  <section id="tab-chats" class="hidden">
+    <div id="chatsList" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <div id="activeChatBox" class="hidden" style="margin-top:12px; background:var(--card); padding:12px; border-radius:14px;">
+      <h4 id="chatHeader" style="margin-top:0;"></h4>
+      <div id="messagesBox" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <input id="chatInput" type="text" placeholder="اكتب رسالتك...">
+        <button id="sendMsgBtn" class="btn" style="width:auto; padding:0 16px;">إرسال</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-settings" class="hidden">
+    <div style="background:var(--card); padding:14px; border-radius:14px;">
+      <div><strong>حالة الحساب:</strong> <span id="planStatus">مجاني</span></div>
+    </div>
+  </section>
+
+  <nav class="nav">
+    <button class="active" data-tab="characters">الشخصيات</button>
+    <button data-tab="shop">المتجر</button>
+    <button data-tab="chats">المحادثات</button>
+    <button data-tab="settings">الإعدادات</button>
+  </nav>
+
+  <script>
+    const state = { coins: 100, activeChatId: null, characters: [{id: 'c1', name: 'نور', role: 'مرشد تقني'}], chats: { c1: [{sender: 'bot', text: 'أهلاً بك!'}] } };
+    
+    function renderCharacters() {
+      document.getElementById('charactersGrid').innerHTML = state.characters.map(c => `
+        <div class="card">
+          <div><strong>${c.name}</strong><div>${c.role}</div></div>
+          <button class="btn" onclick="openChat('${c.id}')">بدء محادثة</button>
+        </div>
+      `).join('');
+    }
+
+    function openChat(id) {
+      state.activeChatId = id;
+      document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+      document.getElementById('tab-chats').classList.remove('hidden');
+      renderChat();
+    }
+
+    function renderChat() {
+      const box = document.getElementById('activeChatBox');
+      box.classList.remove('hidden');
+      document.getElementById('chatHeader').textContent = state.activeChatId;
+      document.getElementById('messagesBox').innerHTML = state.chats[state.activeChatId].map(m => 
+        `<div style="padding:8px; border-radius:10px; background:${m.sender==='user'?'#7c5cff':'#252036'};">${m.text}</div>`
+      ).join('');
+    }
+
+    document.querySelectorAll('.nav button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(`tab-${e.target.dataset.tab}`).classList.remove('hidden');
+      });
+    });
+
+    document.getElementById('sendMsgBtn').addEventListener('click', () => {
+      const input = document.getElementById('chatInput');
+      if(input.value) {
+        state.chats[state.activeChatId].push({sender: 'user', text: input.value});
+        input.value = '';
+        renderChat();
+      }
+    });
+
+    renderCharacters();
+  </script>
+</body>
+</html>
