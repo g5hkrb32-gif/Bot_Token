@@ -3,224 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مشغل 18+ صريح</title>
+    <title>Lucid Dreams - Owned by @akrrma99</title>
     <style>
         body {
-            background-color: #0d0d0d;
+            background-color: #050505;
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background: #1a1a1a;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(255, 0, 100, 0.5);
-            overflow: hidden;
-            position: relative;
+        h1 {
+            color: #ff0055;
+            text-shadow: 0 0 10px #ff0055;
+            margin-bottom: 10px;
         }
 
-        /* شارة 18+ */
-        .age-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #ff0055;
+        .owner-badge {
+            background: linear-gradient(45deg, #ff0055, #ff6600);
             color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
             font-weight: bold;
-            font-size: 1.2em;
-            z-index: 10;
-            box-shadow: 0 0 10px #ff0055;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+            border: 1px solid #fff;
         }
 
-        /* منطقة الفيديو/الصورة */
-        .media-area {
-            position: relative;
+        /* شبكة البطاقات */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             width: 100%;
-            height: 450px;
-            background: #000;
+            max-width: 1000px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #333;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+            border-color: #ff0055;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background: #222;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
+            color: #555;
+            font-size: 2em;
         }
 
-        .media-area img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: filter 0.3s ease;
+        .card-info {
+            padding: 15px;
         }
 
-        /* تأثير الضبابية للمحتوى غير المرغوب فيه */
-        .blur-content {
-            filter: blur(15px);
+        .card-title {
+            font-weight: bold;
+            color: #fff;
+            margin: 0;
         }
 
-        /* زر التبديل */
-        .toggle-btn {
+        .card-desc {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .tag-18 {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             background: #ff0055;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7em;
             font-weight: bold;
-            font-size: 1em;
-            z-index: 10;
-            transition: transform 0.2s;
         }
 
-        .toggle-btn:hover {
-            transform: scale(1.1);
-            background: #ff3377;
-        }
-
-        /* شريط التقدم */
-        .progress-bar {
+        /* النافذة المنبثقة (Modal) */
+        .modal-overlay {
+            display:        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 5px;
-            background: #333;
-        }
-
-        .progress-fill {
             height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ff0055, #ff6600);
-            transition: width 0.1s linear;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* معلومات الفيديو */
-        .info {
+        .modal-content {
+            background: #1a1a1a;
             padding: 20px;
-        }
-
-        .info h2 {
-            margin: 0 0 10px 0;
-            color: #ff0055;
-        }
-
-        .tags {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .tag {
-            background: #333;
-            padding: 5px 10px;
             border-radius: 15px;
-            font-size: 0.8em;
-            color: #ccc;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            border: 2px solid #ff0055;
         }
 
-        /* أيقونة التشغيل */
-        .play-icon {
-            font-size: 3em;
-            color: rgba(255, 255, 255, 0.8);
+        .close-btn {
             position: absolute;
-            z-index: 5;
+            top: 10px;
+            right: 15px;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
         }
+
+        /* تذييل الصفحة بعلامة المالك */
+        .footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.8em;
+            width: 100%;
+            border-top: 1px solid #333;
+        }
+
+        .owner-footer {
+            color: #ff0055;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="age-badge">18+</div>
+    <h1>Lucid Dreams (18+)</h1>
     
-    <div class="media-area" id="mediaArea">
-        <div class="play-icon">▶</div>
-        <!-- صورة توضيحية (يمكن استبدالها بأي رابط صورة) -->
-        <img id="mainImage" src="https://via.placeholder.com/800x450/000000/FFFFFF?text=اضغط+للكشف+عن+العري" alt="18+ Content">
-        <button class="toggle-btn" id="toggleBtn">كشف العاري 🔞</button>
+    <!-- شارة المالك -->
+    <div class="owner-badge">تم تطويره بواسطة @akrrma99</div>
+
+    <div class="grid-container" id="cardGrid">
+        <!-- البطاقات سيتم إنشاؤها بالجافاسكريبت -->
     </div>
 
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-    </div>
-
-    <div class="info">
-        <h2>مشهد ساخن جداً</h2>
-        <p>وصف مختصر للمشهد... عاري، صريح، بدون censura.</p>
-        <div class="tags">
-            <span class="tag">#عري</span>
-            <span class="tag">#بورن</span>
-            <span class="tag">#جرأة</span>
-            <span class="tag">#18+</span>
+    <!-- نافذة المشاهدة -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">عنوان المشهد</h2>
+            <div style="width: 100%; height: 300px; background: #000; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                <span style="font-size: 3em;">▶</span>
+            </div>
+            <p id="modalDesc">وصف تفصيلي للمشهد...</p>
+            <button class="toggle-btn" style="width: 100%;">بدء العرض</button>
         </div>
     </div>
-</div>
+
+    <!-- تذييل الصفحة -->
+    <div class="footer">
+        جميع الحقوق محفوظة © 2026 | الملكية لـ <span class="owner-footer">@akrrma99</span>
+    </div>
 
 <script>
-    const mediaArea = document.getElementById('mediaArea');
-    const mainImage = document.getElementById('mainImage');
-    const toggleBtn = document.getElementById('toggleBtn');
-    const progressFill = document.getElementById('progressFill');
-    let isRevealed = false;
+    // بيانات البطاقات (يمكنك إضافة المزيد)
+    const cardsData = [
+        { title: "Behind on Rent", desc: "أليكسا تأخرت عن الدفع...", img: "🏠" },
+        { title: "Stray in the Alley", desc: "نيا في الزقاق...", img: "🌧️" },
+        { title: "Catgirl From Another World", desc: "قطة غريبة...", img: "🐱" },
+        { title: "Wrong Side of Escort Service", desc: "الينابيع الساخنة...", img: "♨️" },
+        { title: "Date Night", desc: "مساءً هادئ...", img: "🍷" },
+        { title: "BDSM Dungeon", desc: "غرفة VIP...", img: "⛓️" }
+    ];
 
-    // محاكاة تشغيل الفيديو/الصورة
-    let progress = 0;
-    let interval;
+    const grid = document.getElementById('cardGrid');
+    const modal = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
 
-    function startProgress() {
-        clearInterval(interval);
-        progress = 0;
-        interval = setInterval(() => {
-            progress += 1;
-            progressFill.style.width = progress + '%';
-            if (progress >= 100) {
-                clearInterval(interval);
-            }
-        }, 50); // سرعة الشريط
+    // إنشاء البطاقات
+    cardsData.forEach(card => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <div class="tag-18">18+</div>
+            <div class="card-img">${card.img}</div>
+            <div class="card-info">
+                <div class="card-title">${card.title}</div>
+                <div class="card-desc">${card.desc}</div>
+            </div>
+        `;
+        div.onclick = () => openModal(card);
+        grid.appendChild(div);
+    });
+
+    function openModal(card) {
+        modalTitle.innerText = card.title;
+        modalDesc.innerText = card.desc;
+        modal.style.display = 'flex';
     }
 
-    // تأثير الصوت (يمكنك تغيير الرابط)
-    function playSound() {
-        const audio = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3'); // صوت نقر بسيط
-        audio.play().catch(e => console.log("Audio autoplay blocked"));
+    function closeModal() {
+        modal.style.display = 'none';
     }
 
-    // تبديل المحتوى
-    toggleBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // منع تفعيل النقر على الصورة
-        isRevealed = !isRevealed;
-        
-        if (isRevealed) {
-            mainImage.classList.remove('blur-content');
-            mainImage.src = "https://via.placeholder.com/800x450/ff0055/FFFFFF?text=المشهد+الصارخ+(عاري)";
-            toggleBtn.textContent = "إخفاء المشهد 👁️";
-            toggleBtn.style.background = "#333";
-        } else {
-            mainImage.classList.add('blur-content');
-            mainImage.src = "https://via.placeholder.com/800x450/000000/FFFFFF?text=اضغط+للكشف+عن+العري";
-            toggleBtn.textContent = "كشف العاري 🔞";
-            toggleBtn.style.background = "#ff0055";
+    // إغلاق النافذة عند النقر خارجها
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
         }
-        playSound();
-    });
-
-    // عند النقر على منطقة المشاهدة
-    mediaArea.addEventListener('click', () => {
-        startProgress();
-        playSound();
-        // يمكنك إضافة منطق لتشغيل فيديو حقيقي هنا
-    });
-
-    // بدء شريط التقدم تلقائياً عند التحميل
-    window.onload = startProgress;
+    }
 </script>
 
 </body>
