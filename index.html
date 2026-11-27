@@ -6,10 +6,10 @@ import os
 import json
 
 # ---------------------------------------------------------
-# 🔑 الإعدادات الأساسية
+# 🔑 قراءة المتغيرات من بيئة السيرفر (Render/Heroku)
 # ---------------------------------------------------------
-BOT_TOKEN = "9108066830:AAHH-VHHsbJhZPlW0JFLn9xET7ObWFn9xET7ObWFZ8ifc" 
-HF_TOKEN = "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" # 🔗 تم الربط هنا
+BOT_TOKEN = os.getenv('BOT_TOKEN', '9108066830:AAHH-VHHsbJhZPlW0JFLn9xET7ObWFn9xET7ObWFZ8ifc')
+HF_TOKEN = os.getenv('HF_TOKEN', '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')
 OWNER_ID = 546977659 
 
 # قاعدة بيانات الشخصيات
