@@ -1,877 +1,227 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>المختبر التفاعلي - المالك @akrrma99</title>
-  <style>
-    :root {
-      --bg-dark: #0b0a10;
-      --bg-gradient: radial-gradient(circle at top, #1d1533 0%, #0b0a10 60%);
-      --card-bg: #16151f;
-      --card-border: #282538;
-      --accent-purple: #8b75ff;
-      --accent-purple-hover: #765ef5;
-      --owner-gold: #f59e0b;
-      --text-main: #ffffff;
-      --text-muted: #9e9bb0;
-      --nav-bg: rgba(24, 22, 34, 0.92);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: var(--bg-dark);
-      background-image: var(--bg-gradient);
-      color: var(--text-main);
-      min-height: 100vh;
-      padding-bottom: 105px;
-      overflow-x: hidden;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 16px 10px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(11, 10, 16, 0.85);
-      backdrop-filter: blur(12px);
-    }
-
-    .title-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .page-title {
-      font-size: 24px;
-      font-weight: 800;
-    }
-
-    .owner-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(245, 158, 11, 0.16);
-      border: 1px solid rgba(245, 158, 11, 0.45);
-      color: #fbbf24;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 12px;
-      width: fit-content;
-    }
-
-    .currency-pill {
-      display: flex;
-      align-items: center;
-      background: #1b1926;
-      border: 1px solid #2e2a40;
-      border-radius: 24px;
-      padding: 4px 4px 4px 12px;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .currency-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .add-btn {
-      background: var(--accent-purple);
-      color: #fff;
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      padding: 10px 16px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .owner-banner {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(139, 117, 255, 0.14) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      border-radius: 16px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-    }
-
-    .owner-banner strong {
-      color: #fbbf24;
-    }
-
-    .tab-section {
-      display: none;
-    }
-
-    .tab-section.active {
-      display: block;
-    }
-
-    .search-box {
-      width: 100%;
-      background: #16151f;
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 12px 16px;
-      color: #fff;
-      font-size: 15px;
-      margin-bottom: 12px;
-      outline: none;
-    }
-
-    .search-box::placeholder {
-      color: var(--text-muted);
-    }
-
-    .filter-chips {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-    }
-
-    .chip {
-      background: #1d1b29;
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .chip.active {
-      background: var(--accent-purple);
-      color: #fff;
-      border-color: var(--accent-purple);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .char-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .char-img-wrap {
-      width: 100%;
-      height: 180px;
-      position: relative;
-      background: #211e30;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .char-img-wrap svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .owner-tag-pill {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(11, 10, 16, 0.82);
-      border: 1px solid rgba(245, 158, 11, 0.5);
-      color: #fbbf24;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 10px;
-    }
-
-    .price-badge {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(25, 22, 38, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .char-info {
-      padding: 12px;
-    }
-
-    .char-name {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .char-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .premium-banner {
-      background: linear-gradient(135deg, #251d42 0%, #171426 100%);
-      border: 1px solid #3a2f63;
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .premium-banner h3 {
-      font-size: 15px;
-      margin-bottom: 6px;
-      line-height: 1.4;
-    }
-
-    .premium-banner p {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
-
-    .purple-btn {
-      width: 100%;
-      background: var(--accent-purple);
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .item-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .info-icon {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid var(--text-muted);
-      color: var(--text-muted);
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .item-visual {
-      height: 105px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 50px;
-      margin-bottom: 12px;
-      background: rgba(139, 117, 255, 0.1);
-      border-radius: 12px;
-    }
-
-    .chat-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .chat-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 12px;
-      border-radius: 16px;
-      cursor: pointer;
-    }
-
-    .chat-avatar-box {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid var(--accent-purple);
-      flex-shrink: 0;
-    }
-
-    .chat-avatar-box svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .chat-details {
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .chat-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .chat-title {
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .chat-time {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .chat-preview {
-      font-size: 13px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .settings-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .status-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .status-value {
-      font-size: 22px;
-      font-weight: 800;
-      color: #fbbf24;
-      margin-bottom: 12px;
-    }
-
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--card-border);
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .setting-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .setting-row:first-child {
-      padding-top: 0;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 400px;
-      background: var(--nav-bg);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 28px;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 8px;
-      z-index: 100;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 8px 16px;
-      border-radius: 18px;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .nav-btn.active {
-      color: #fff;
-      background: rgba(139, 117, 255, 0.25);
-    }
-
-    .chat-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: var(--bg-dark);
-      z-index: 200;
-      flex-direction: column;
-    }
-
-    .chat-modal.open {
-      display: flex;
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      background: #16151f;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .back-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    .messages-area {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .msg {
-      max-width: 80%;
-      padding: 12px 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .msg.bot {
-      background: #1d1b29;
-      border: 1px solid var(--card-border);
-      align-self: flex-start;
-    }
-
-    .msg.user {
-      background: var(--accent-purple);
-      color: #fff;
-      align-self: flex-end;
-    }
-
-    .msg-sender {
-      font-size: 11px;
-      color: #fbbf24;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .chat-input-bar {
-      display: flex;
-      gap: 8px;
-      padding: 12px 16px;
-      background: #16151f;
-      border-top: 1px solid var(--card-border);
-    }
-
-    .chat-input-bar input {
-      flex: 1;
-      background: #0b0a10;
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 10px 16px;
-      color: #fff;
-      outline: none;
-    }
-
-    .send-btn {
-      background: var(--accent-purple);
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 0 18px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشغل 18+ صريح</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 0, 100, 0.5);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* شارة 18+ */
+        .age-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ff0055;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+            z-index: 10;
+            box-shadow: 0 0 10px #ff0055;
+        }
+
+        /* منطقة الفيديو/الصورة */
+        .media-area {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .media-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+
+        /* تأثير الضبابية للمحتوى غير المرغوب فيه */
+        .blur-content {
+            filter: blur(15px);
+        }
+
+        /* زر التبديل */
+        .toggle-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #ff0055;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            z-index: 10;
+            transition: transform 0.2s;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: #ff3377;
+        }
+
+        /* شريط التقدم */
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #333;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff0055, #ff6600);
+            transition: width 0.1s linear;
+        }
+
+        /* معلومات الفيديو */
+        .info {
+            padding: 20px;
+        }
+
+        .info h2 {
+            margin: 0 0 10px 0;
+            color: #ff0055;
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #ccc;
+        }
+
+        /* أيقونة التشغيل */
+        .play-icon {
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="header">
-    <div class="title-group">
-      <div class="page-title" id="headerTitle">الشخصيات</div>
-      <div class="owner-badge">👑 المالك: @akrrma99</div>
-    </div>
-    <div class="currency-pill">
-      <div class="currency-item">⚡ <span id="energyCount">10</span></div>
-      <div class="currency-item">💎 <span id="diamondCount">100</span></div>
-      <button class="add-btn" onclick="addDiamonds()">+</button>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="owner-banner">
-      <span>الصلاحية: <strong>مالك النظام (Owner)</strong></span>
-      <span>@akrrma99</span>
+<div class="container">
+    <div class="age-badge">18+</div>
+    
+    <div class="media-area" id="mediaArea">
+        <div class="play-icon">▶</div>
+        <!-- صورة توضيحية (يمكن استبدالها بأي رابط صورة) -->
+        <img id="mainImage" src="https://via.placeholder.com/800x450/000000/FFFFFF?text=اضغط+للكشف+عن+العري" alt="18+ Content">
+        <button class="toggle-btn" id="toggleBtn">كشف العاري 🔞</button>
     </div>
 
-    <div id="tab-characters" class="tab-section active">
-      <input type="text" class="search-box" id="searchInput" placeholder="ابحث عن شخصية أنمي..." oninput="renderCharacters()" />
-      <div class="filter-chips">
-        <button class="chip active" onclick="setFilter('all', this)">الكل</button>
-        <button class="chip" onclick="setFilter('anime', this)">أنمي</button>
-        <button class="chip" onclick="setFilter('fantasy', this)">خيال ومغامرة</button>
-      </div>
-      <div class="grid" id="charactersGrid"></div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
     </div>
 
-    <div id="tab-items" class="tab-section">
-      <div class="premium-banner">
-        <h3>مرحبًا بالمالك @akrrma99 — صلاحيات كاملة مفتوحة</h3>
-        <p>يمكنك إضافة الرصيد وتجربة جميع العناصر مباشرة بصفتك المالك</p>
-        <button class="purple-btn" onclick="addDiamonds()">إضافة +50 ألماسة للمالك</button>
-      </div>
-      <div class="grid" id="itemsGrid"></div>
-    </div>
-
-    <div id="tab-chats" class="tab-section">
-      <div class="chat-list" id="chatList"></div>
-    </div>
-
-    <div id="tab-settings" class="tab-section">
-      <div class="settings-card">
-        <div class="status-label">المالك الحالي للنظام</div>
-        <div class="status-value">👑 @akrrma99 (Owner)</div>
-        <button class="purple-btn" onclick="alert('أنت المالك الرسمي @akrrma99 وجميع الصلاحيات مفعلة لك.')">تأكيد صلاحيات المالك</button>
-      </div>
-
-      <div class="settings-card">
-        <div class="setting-row">
-          <span>👑 حساب المالك</span>
-          <span style="color: #fbbf24">@akrrma99</span>
+    <div class="info">
+        <h2>مشهد ساخن جداً</h2>
+        <p>وصف مختصر للمشهد... عاري، صريح، بدون censura.</p>
+        <div class="tags">
+            <span class="tag">#عري</span>
+            <span class="tag">#بورن</span>
+            <span class="tag">#جرأة</span>
+            <span class="tag">#18+</span>
         </div>
-        <div class="setting-row">
-          <span>🎙️ أصوات أنمي مخصصة</span>
-          <span style="color: var(--text-muted)">‹</span>
-        </div>
-        <div class="setting-row">
-          <span>🌐 اللغة</span>
-          <span style="color: var(--text-muted)">العربية ‹</span>
-        </div>
-        <div class="setting-row">
-          <span>👍 تقييم الرسائل</span>
-          <input type="checkbox" checked />
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="switchTab('characters', 'الشخصيات', this)">💜</button>
-    <button class="nav-btn" onclick="switchTab('items', 'العناصر', this)">🍸</button>
-    <button class="nav-btn" onclick="switchTab('chats', 'المحادثات', this)">💬</button>
-    <button class="nav-btn" onclick="switchTab('settings', 'الإعدادات', this)">⚙️</button>
-  </nav>
+<script>
+    const mediaArea = document.getElementById('mediaArea');
+    const mainImage = document.getElementById('mainImage');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const progressFill = document.getElementById('progressFill');
+    let isRevealed = false;
 
-  <div class="chat-modal" id="chatModal">
-    <div class="modal-header">
-      <button class="back-btn" onclick="closeChat()">→</button>
-      <div class="chat-avatar-box" id="modalAvatarBox"></div>
-      <div>
-        <div id="modalName" style="font-weight: 700;"></div>
-        <div style="font-size: 12px; color: #fbbf24;">يتحدث مع المالك @akrrma99</div>
-      </div>
-    </div>
-    <div class="messages-area" id="messagesArea"></div>
-    <div class="chat-input-bar">
-      <input type="text" id="msgInput" placeholder="اكتب رسالتك كمالك (@akrrma99)..." onkeydown="if(event.key==='Enter') sendMessage()" />
-      <button class="send-btn" onclick="sendMessage()">إرسال</button>
-    </div>
-  </div>
+    // محاكاة تشغيل الفيديو/الصورة
+    let progress = 0;
+    let interval;
 
-  <script>
-    var OWNER_HANDLE = "@akrrma99";
-    var diamonds = 100;
-    var currentFilter = 'all';
-
-    function makeAnimeAvatar(bg1, bg2, hairColor, eyeColor, emoji) {
-      return '<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">' +
-        '<defs><linearGradient id="g' + bg1.replace('#','') + '" x1="0" y1="0" x2="1" y2="1">' +
-        '<stop offset="0%" stop-color="' + bg1 + '"/><stop offset="100%" stop-color="' + bg2 + '"/></linearGradient></defs>' +
-        '<rect width="200" height="220" fill="url(#g' + bg1.replace('#','') + ')"/>' +
-        '<circle cx="100" cy="95" r="54" fill="' + hairColor + '" opacity="0.35"/>' +
-        '<ellipse cx="100" cy="105" rx="42" ry="48" fill="#ffe0bd"/>' +
-        '<path d="M56 95 Q100 35 144 95 Q138 65 100 62 Q62 65 56 95 Z" fill="' + hairColor + '"/>' +
-        '<circle cx="82" cy="108" r="7" fill="' + eyeColor + '"/><circle cx="80" cy="105" r="2.5" fill="#fff"/>' +
-        '<circle cx="118" cy="108" r="7" fill="' + eyeColor + '"/><circle cx="116" cy="105" r="2.5" fill="#fff"/>' +
-        '<path d="M90 128 Q100 136 110 128" stroke="#c96a6a" stroke-width="3" fill="none" stroke-linecap="round"/>' +
-        '<path d="M45 220 Q100 155 155 220 Z" fill="' + hairColor + '" opacity="0.85"/>' +
-        '<text x="165" y="42" font-size="28">' + emoji + '</text>' +
-        '</svg>';
+    function startProgress() {
+        clearInterval(interval);
+        progress = 0;
+        interval = setInterval(() => {
+            progress += 1;
+            progressFill.style.width = progress + '%';
+            if (progress >= 100) {
+                clearInterval(interval);
+            }
+        }, 50); // سرعة الشريط
     }
 
-    var characters = [
-      {
-        id: 1,
-        name: "اصنع شخصيتك",
-        desc: "حوّل خيالك إلى أي شخصية أنمي تريدها بصفتك المالك " + OWNER_HANDLE,
-        category: "fantasy",
-        price: 99,
-        svg: makeAnimeAvatar("#3b0764", "#1e1b4b", "#c084fc", "#6366f1", "✨"),
-        greeting: "أهلاً بالمالك " + OWNER_HANDLE + "! أنا شخصيتك المخصصة، كيف نبدأ مغامرتنا اليوم؟"
-      },
-      {
-        id: 2,
-        name: "آيكو - طالبة الأكاديمية",
-        desc: "زميلتك في نادي الأنمي، ترحب بالمالك " + OWNER_HANDLE + " لإكمال مشروع المهرجان",
-        category: "anime",
-        price: 0,
-        svg: makeAnimeAvatar("#1e293b", "#312e81", "#334155", "#3b82f6", "🎀"),
-        greeting: "*تبتسم باحترام* أهلاً بك يا مالك " + OWNER_HANDLE + "! هل جئت لتفقد جناح النادي؟"
-      },
-      {
-        id: 3,
-        name: "ساكورا - حارسة البوابة",
-        desc: "محاربة شجاعة من عالم السحر تحمي المملكة وتطيع أوامر المالك " + OWNER_HANDLE,
-        category: "fantasy",
-        price: 0,
-        svg: makeAnimeAvatar("#500724", "#2e1065", "#f472b6", "#ec4899", "🌸"),
-        greeting: "تحياتي للمالك " + OWNER_HANDLE + "! بوابة الأبعاد مفتوحة بأمرك."
-      },
-      {
-        id: 4,
-        name: "نيا - قطة السايبر",
-        desc: "مخترقة ذكية من مدينة المستقبل تعمل تحت إشراف المالك " + OWNER_HANDLE,
-        category: "anime",
-        price: 0,
-        svg: makeAnimeAvatar("#172554", "#3b0764", "#fb923c", "#10b981", "🐾"),
-        greeting: "مياو~ تم التحقق من هوية المالك " + OWNER_HANDLE + " بنجاح! ما هي مهمتك اليوم؟"
-      },
-      {
-        id: 5,
-        name: "آشا - مستكشفة الجليد",
-        desc: "مرشدة جبلية تقودك عبر العواصف الثلجية نحو القلعة المفقودة",
-        category: "fantasy",
-        price: 69,
-        svg: makeAnimeAvatar("#0f172a", "#164e63", "#38bdf8", "#0284c7", "❄️"),
-        greeting: "مرحباً بالمالك " + OWNER_HANDLE + "، الطريق جاهز والمخيم بانتظارك."
-      },
-      {
-        id: 6,
-        name: "رين - عازفة البيانو",
-        desc: "موسيقية موهوبة تعزف ألحان الأنمي الكلاسيكية خصيصاً للمالك " + OWNER_HANDLE,
-        category: "anime",
-        price: 0,
-        svg: makeAnimeAvatar("#2e1065", "#090d16", "#a855f7", "#8b5cf6", "🎹"),
-        greeting: "يشرفني عزف هذه المقطوعة للمالك " + OWNER_HANDLE + "، ما رأيك فيها؟"
-      }
-    ];
+    // تأثير الصوت (يمكنك تغيير الرابط)
+    function playSound() {
+        const audio = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3'); // صوت نقر بسيط
+        audio.play().catch(e => console.log("Audio autoplay blocked"));
+    }
 
-    var shopItems = [
-      { name: "أذنا ثعلب أنمي", icon: "🦊", price: 190 },
-      { name: "تذكرة سفر", icon: "🎫", price: 25 },
-      { name: "باقة ورود", icon: "💐", price: 5 },
-      { name: "بطاقة VIP", icon: "💳", price: 40 },
-      { name: "كرة بلورية سحرية", icon: "🔮", price: 300 },
-      { name: "خاتم ملكي", icon: "💍", price: 55 }
-    ];
-
-    function renderCharacters() {
-      var grid = document.getElementById('charactersGrid');
-      var query = document.getElementById('searchInput').value.toLowerCase();
-      var html = '';
-
-      for (var i = 0; i < characters.length; i++) {
-        var c = characters[i];
-        var matchCat = (currentFilter === 'all' || c.category === currentFilter);
-        var matchQuery = (!query || c.name.toLowerCase().indexOf(query) !== -1 || c.desc.toLowerCase().indexOf(query) !== -1);
-        if (matchCat && matchQuery) {
-          var badge = c.price > 0 ? '<div class="price-badge">' + c.price + ' 💎</div>' : '';
-          html += '<div class="char-card" onclick="openChat(' + c.id + ')">' +
-            '<div class="char-img-wrap">' + c.svg + '<span class="owner-tag-pill">👑 ' + OWNER_HANDLE + '</span>' + badge + '</div>' +
-            '<div class="char-info"><div class="char-name">' + c.name + '</div>' +
-            '<div class="char-desc">' + c.desc + '</div></div></div>';
+    // تبديل المحتوى
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // منع تفعيل النقر على الصورة
+        isRevealed = !isRevealed;
+        
+        if (isRevealed) {
+            mainImage.classList.remove('blur-content');
+            mainImage.src = "https://via.placeholder.com/800x450/ff0055/FFFFFF?text=المشهد+الصارخ+(عاري)";
+            toggleBtn.textContent = "إخفاء المشهد 👁️";
+            toggleBtn.style.background = "#333";
+        } else {
+            mainImage.classList.add('blur-content');
+            mainImage.src = "https://via.placeholder.com/800x450/000000/FFFFFF?text=اضغط+للكشف+عن+العري";
+            toggleBtn.textContent = "كشف العاري 🔞";
+            toggleBtn.style.background = "#ff0055";
         }
-      }
-      grid.innerHTML = html;
-    }
+        playSound();
+    });
 
-    function renderItems() {
-      var grid = document.getElementById('itemsGrid');
-      var html = '';
-      for (var i = 0; i < shopItems.length; i++) {
-        var item = shopItems[i];
-        html += '<div class="item-card">' +
-          '<div class="item-header"><span>' + item.name + '</span><span class="info-icon">i</span></div>' +
-          '<div class="item-visual">' + item.icon + '</div>' +
-          '<button class="purple-btn" onclick="buyItem(\'' + item.name + '\',' + item.price + ')">' + item.price + ' 💎</button>' +
-          '</div>';
-      }
-      grid.innerHTML = html;
-    }
+    // عند النقر على منطقة المشاهدة
+    mediaArea.addEventListener('click', () => {
+        startProgress();
+        playSound();
+        // يمكنك إضافة منطق لتشغيل فيديو حقيقي هنا
+    });
 
-    function renderChats() {
-      var list = document.getElementById('chatList');
-      var html = '';
-      for (var i = 1; i <= 3; i++) {
-        var c = characters[i];
-        html += '<div class="chat-row" onclick="openChat(' + c.id + ')">' +
-          '<div class="chat-avatar-box">' + c.svg + '</div>' +
-          '<div class="chat-details"><div class="chat-top"><span class="chat-title">' + c.name + ' • 👑 ' + OWNER_HANDLE + '</span>' +
-          '<span class="chat-time">' + (i === 1 ? '00:28' : 'أمس') + '</span></div>' +
-          '<div class="chat-preview">' + c.greeting + '</div></div></div>';
-      }
-      list.innerHTML = html;
-    }
+    // بدء شريط التقدم تلقائياً عند التحميل
+    window.onload = startProgress;
+</script>
 
-    function switchTab(tabId, title, btn) {
-      var tabs = document.querySelectorAll('.tab-section');
-      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
-      document.getElementById('tab-' + tabId).classList.add('active');
-      document.getElementById('headerTitle').innerText = title;
-
-      var btns = document.querySelectorAll('.nav-btn');
-      for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
-      btn.classList.add('active');
-    }
-
-    function setFilter(filter, btn) {
-      currentFilter = filter;
-      var chips = document.querySelectorAll('.chip');
-      for (var i = 0; i < chips.length; i++) chips[i].classList.remove('active');
-      btn.classList.add('active');
-      renderCharacters();
-    }
-
-    function addDiamonds() {
-      diamonds += 50;
-      document.getElementById('diamondCount').innerText = diamonds;
-    }
-
-    function buyItem(name, price) {
-      if (diamonds >= price) {
-        diamonds -= price;
-        document.getElementById('diamondCount').innerText = diamonds;
-        alert('تم إضافة "' + name + '" لحساب المالك ' + OWNER_HANDLE + ' بنجاح!');
-      } else {
-        alert('رصيد الألماس غير كافٍ! اضغط على + لزيادة الرصيد.');
-      }
-    }
-
-    function openChat(id) {
-      var char = null;
-      for (var i = 0; i < characters.length; i++) {
-        if (characters[i].id === id) char = characters[i];
-      }
-      if (!char) return;
-
-      if (char.price > 0) {
-        if (diamonds < char.price) {
-          alert('تحتاج إلى ' + char.price + ' 💎 لفتح هذه الشخصية!');
-          return;
-        }
-        diamonds -= char.price;
-        char.price = 0;
-        document.getElementById('diamondCount').innerText = diamonds;
-        renderCharacters();
-      }
-
-      document.getElementById('modalAvatarBox').innerHTML = char.svg;
-      document.getElementById('modalName').innerText = char.name + ' (المالك: ' + OWNER_HANDLE + ')';
-      document.getElementById('messagesArea').innerHTML = '<div class="msg bot"><div class="msg-sender">' + char.name + '</div>' + char.greeting + '</div>';
-      document.getElementById('chatModal').classList.add('open');
-    }
-
-    function closeChat() {
-      document.getElementById('chatModal').classList.remove('open');
-    }
-
-    function sendMessage() {
-      var input = document.getElementById('msgInput');
-      var text = input.value.trim();
-      if (!text) return;
-
-      var area = document.getElementById('messagesArea');
-      area.innerHTML += '<div class="msg user"><div class="msg-sender">👑 المالك ' + OWNER_HANDLE + '</div>' + text + '</div>';
-      input.value = '';
-      area.scrollTop = area.scrollHeight;
-
-      setTimeout(function() {
-        var replies = [
-          "سمعاً وطاعة يا مالك " + OWNER_HANDLE + "! أخبرني بما تريد بعد ذلك.",
-          "*تبتسم بحماس* رأيك هو الأول دائماً يا " + OWNER_HANDLE + "، لنبدأ!",
-          "تم تسجيل توجيهك يا مالك " + OWNER_HANDLE + "، هل ننتقل للخطوة التالية؟"
-        ];
-        var reply = replies[Math.floor(Math.random() * replies.length)];
-        area.innerHTML += '<div class="msg bot">' + reply + '</div>';
-        area.scrollTop = area.scrollHeight;
-      }, 500);
-    }
-
-    renderCharacters();
-    renderItems();
-    renderChats();
-  </script>
 </body>
 </html>
